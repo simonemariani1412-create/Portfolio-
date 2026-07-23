@@ -300,6 +300,7 @@
   ];
 
   const GH_USER = "simonemariani1412-create";
+  const HIDE_REPOS = ["Portfolio-"]; // repo del sito stesso, nascosto dalla lista
 
   // ---------- RENDER ----------
   const el = (id)=>document.getElementById(id);
@@ -329,7 +330,8 @@
           <div style="color:var(--muted);font-size:13px;margin-top:4px">${u.public_repos} public repos · ${u.followers} followers</div>
         </div>`;
 
-      const repos = await fetch(`https://api.github.com/users/${GH_USER}/repos?sort=updated&per_page=6`).then(r=>r.json());
+      let repos = await fetch(`https://api.github.com/users/${GH_USER}/repos?sort=updated&per_page=12`).then(r=>r.json());
+      if(Array.isArray(repos)) repos = repos.filter(r=>!HIDE_REPOS.includes(r.name)).slice(0,6);
       if(!Array.isArray(repos) || repos.length===0){
         el("repos").innerHTML = `<div class="gh-empty">No public repositories yet. As soon as you publish your projects on GitHub, they will appear here automatically. 🚀</div>`;
         return;
